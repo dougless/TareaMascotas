@@ -37,6 +37,8 @@ public class Main2Activity extends AppCompatActivity {
         listaMascotas = (RecyclerView) findViewById(R.id.rv1);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
+        llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
 
         listaMascotas.setLayoutManager(llm);
         mascotas =  getIntent().getParcelableArrayListExtra("lista");
