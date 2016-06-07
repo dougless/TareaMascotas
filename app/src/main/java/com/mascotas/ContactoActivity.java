@@ -58,6 +58,14 @@ public class ContactoActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.contacto:
+                Intent activityC = new Intent(this, ContactoActivity.class);
+                startActivity(activityC);
+                return true;
+            case R.id.acercade:
+                Intent activityA = new Intent(this, AcercadeActivity.class);
+                startActivity(activityA);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
