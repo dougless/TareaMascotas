@@ -1,82 +1,85 @@
 package com.mascotas;
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.mascotas.adaptador.MascotaAdaptador;
+import com.mascotas.adaptador.PageAdapter;
+import com.mascotas.framents.MascotaFragment;
+import com.mascotas.framents.RecyclerviewFragment;
+import com.mascotas.pojo.Mascota;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     Button boton;
-    ArrayList<Mascota> mascotas;
-    ArrayList<Mascota> favoritas;
-    RecyclerView listaMascotas;
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
         getSupportActionBar().setTitle("");
 
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+
         boton = (Button) actionBar.findViewById(R.id.button);
-
-        if(getIntent().getParcelableArrayListExtra("lista") != null)
-            mascotas = getIntent().getParcelableArrayListExtra("lista");
-
-        if(getIntent().getParcelableArrayListExtra("favoritas") != null)
-            favoritas = getIntent().getParcelableArrayListExtra("favoritas");
-
-        listaMascotas = (RecyclerView) findViewById(R.id.rv1);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-
-        listaMascotas.setLayoutManager(llm);
-
-        if(mascotas == null)
-            inicializarLista();
-
-        if(favoritas == null)
-            favoritas = new ArrayList<>();
-
-        inicializarAdaptador();
-
-        boton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                Intent activity2 = new Intent(MainActivity.this, Main2Activity.class);
-                activity2.putExtra("lista", mascotas);
-                activity2.putExtra("favoritas", favoritas);
-                startActivity(activity2);
-            }
-        });
-
-
-        System.out.println("---------------------------------favoritas: " + favoritas.size());
+        setUpViewPager();
     }
 
-    public void inicializarAdaptador(){
-        MascotaAdaptador mascotaAdaptador = new MascotaAdaptador(mascotas,favoritas,this);
-        listaMascotas.setAdapter(mascotaAdaptador);
+    public ArrayList<Fragment> agregarFragments(){
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(new RecyclerviewFragment());
+        fragments.add(new MascotaFragment());
+
+        return fragments;
     }
 
-    public void inicializarLista(){
+    public void setUpViewPager(){
+        viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(),agregarFragments()));
+        tabLayout.setupWithViewPager(viewPager);
 
-        mascotas = new ArrayList<Mascota>();
-
-        mascotas.add(new Mascota("Doggy",0,R.drawable.chowchow));
-        mascotas.add(new Mascota("Flooper",0,R.drawable.basset));
-        mascotas.add(new Mascota("Rocky",0,R.drawable.husky));
-        mascotas.add(new Mascota("Chester",0,R.drawable.labrador));
-        mascotas.add(new Mascota("Bony",0,R.drawable.golden));
+        tabLayout.getTabAt(0).setIcon(R.drawable.home);
+        tabLayout.getTabAt(1).setIcon(R.drawable.puppy);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_opciones, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.contacto:
+                Intent activityC = new Intent(this, ContactoActivity.class);
+                startActivity(activityC);
+                return true;
+            case R.id.acercade:
+                Intent activityA = new Intent(this, AcercadeActivity.class);
+                startActivity(activityA);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

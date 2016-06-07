@@ -1,4 +1,4 @@
-package com.mascotas;
+package com.mascotas.pojo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
